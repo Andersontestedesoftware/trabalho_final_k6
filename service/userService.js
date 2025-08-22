@@ -26,4 +26,4 @@ function listUsers() {
   return users.map(u => ({ username: u.username, favorecidos: u.favorecidos, saldo: u.saldo }));
 }
 
-module.exports = { registerUser, loginUser, listUsers, findUserByUsername };
+module.exports = { registerUser, loginUser, listUsers, findUserByUsername};
