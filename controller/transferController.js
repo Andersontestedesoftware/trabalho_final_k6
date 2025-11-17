@@ -1,8 +1,9 @@
 const express = require('express');
 const router = express.Router();
 const transferService = require('../service/transferService');
+const auth = require('../middleware/authMiddleware');
 
-router.post('/', (req, res) => {
+router.post('/', auth, (req, res) => {
   const { from, to, value } = req.body;
   if (!from || !to || typeof value !== 'number') return res.status(400).json({ error: 'Campos obrigatórios: from, to, value' });
   try {

@@ -1,5 +1,6 @@
 const { users } = require('../model/userModel');
 const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
 
 function findUserByUsername(username) {
   return users.find(u => u.username === username);
@@ -19,7 +20,10 @@ function loginUser({ username, password }) {
   const user = findUserByUsername(username);
   if (!user) throw new Error('Usuário não encontrado');
   if (!bcrypt.compareSync(password, user.password)) throw new Error('Senha inválida');
-  return { username: user.username, favorecidos: user.favorecidos, saldo: user.saldo };
+  // Gera JWT e o retorna junto com os dados do usuário
+  const secret = process.env.JWT_SECRET || 'dev-secret';
+  const token = jwt.sign({ username: user.username }, secret, { expiresIn: '1h' });
+  return { token, username: user.username, favorecidos: user.favorecidos, saldo: user.saldo };
 }
 
 function listUsers() {

@@ -1,0 +1,65 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run unit tests
+        run: npm test --silent
+
+      - name: Start server in background
+        run: |
+          nohup node server.js > server.log 2>&1 &
+          echo $! > server.pid
+
+      - name: Wait for server to be ready
+        run: |
+          for i in {1..30}; do
+            if curl -sS http://localhost:3000/ >/dev/null; then
+              echo "server ready"; break;
+            fi
+            echo "waiting for server..."; sleep 1;
+          done
+
+      - name: Create output dir
+        run: mkdir -p out
+
+      - name: Run k6 load test (Docker) with web dashboard export
+        run: |
+          docker run --rm --network host \
+            -e K6_WEB_DASHBOARD=true \
+            -e K6_WEB_DASHBOARD_EXPORT=html-report.html \
+            -v "${{ github.workspace }}:/scripts" -w /scripts \
+            grafana/k6 run --summary-export=out/summary.json test/k6/trabalho_k6.js
+
+      - name: Upload k6 summary
+        uses: actions/upload-artifact@v4
+        with:
+          name: k6-summary
+          path: out/summary.json
+
+      - name: Upload html report (if produced)
+        uses: actions/upload-artifact@v4
+        with:
+          name: k6-html-report
+          path: html-report.html
+
+      - name: Stop server
+        if: always()
+        run: |
+          if [ -f server.pid ]; then kill $(cat server.pid) || true; fi
