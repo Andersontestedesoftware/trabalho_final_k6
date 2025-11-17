@@ -22,12 +22,6 @@ jobs:
       - name: Run unit tests
         run: npm test --silent
 
-      - name: Start server in background (PowerShell)
-        shell: pwsh
-        run: |
-          $p = Start-Process -FilePath node -ArgumentList 'server.js' -PassThru -NoNewWindow
-          $p.Id | Out-File -Encoding ASCII server.pid
-
       - name: Wait for server to be ready (PowerShell)
         shell: pwsh
         run: |
@@ -50,6 +44,15 @@ jobs:
         shell: pwsh
         run: |
           choco install k6 -y
+
+      - name: Start server (just before k6)
+        shell: pwsh
+        run: |
+          # start server in background and save pid so we can stop it later
+          $p = Start-Process -FilePath node -ArgumentList 'server.js' -PassThru -NoNewWindow
+          $p.Id | Out-File -Encoding ASCII server.pid
+          # wait 1 second to allow the server to start
+          Start-Sleep -Seconds 1
 
       - name: Run k6 load test (PowerShell) exactly like local
         shell: pwsh
