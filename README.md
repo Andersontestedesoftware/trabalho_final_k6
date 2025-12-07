@@ -145,6 +145,12 @@ O código abaixo está armazenado no arquivo `test/k6/trabalho_final_k6.js` e de
 
 - Uso de Token de Autenticação
   - Localização: `test/k6/trabalho_final_k6.js` — montagem do header `Authorization` para chamadas a `/transfers` (linha 101).
+  - Exemplo no seu código:
+    ```javascript
+    const params = { headers: {} };
+    if (token) params.headers['Authorization'] = `Bearer ${token}`; // linha 101
+    const res = http.post(`${BASE_URL}/transfers`, JSON.stringify({ from, to, value }), params);
+    ```
   - Comentário: demonstra sequência real de uso: registrar -> login -> transferir com token JWT.
 
 - Data-Driven Testing
