@@ -112,7 +112,7 @@ O código abaixo está armazenado no arquivo `test/k6/trabalho_final_k6.js` e de
     ```javascript
     const generatedFrom = `from_${generateUsername()}_${Math.floor(Math.random() * 10000)}`; // linhas 50-53
     ```
-  - Comentário: gera dados realísticos e únicos para cada VU/iteração evitando colisões em registros.
+  - Comentário: gera dados realistas e únicos por VU/iteração (usernames, senhas e valores), reduzindo colisões durante os testes. O helper tenta usar a biblioteca faker quando disponível e possui um fallback simples que gera strings/valores programaticamente caso a extensão falhe ou não esteja presente, garantindo que o script continue executando em ambientes sem dependências extra.
 
 - Variável de Ambiente
   - Localização: `test/k6/helpers/BASE_URL.js` — `export const BASE_URL = __ENV.base_url || 'http://localhost:3000'` (linha 2); o script usa `--env base_url="http://localhost:3000"`.
