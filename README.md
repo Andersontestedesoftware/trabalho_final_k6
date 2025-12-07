@@ -62,8 +62,9 @@ O código abaixo está armazenado no arquivo `test/k6/trabalho_final_k6.js` e de
 
 - Groups
   - Exemplo no meu código:
-  
+
     - Comentário: uso do `group()` para agrupar passos lógicos do teste (registro, login, transferência). Facilita leitura e relatórios.
+    
     ```javascript
     
     group('login do remetente', function () { // linhas 76-80
