@@ -63,7 +63,7 @@ O código abaixo está armazenado no arquivo `test/k6/trabalho_final_k6.js` e de
 - Groups
   - Exemplo no meu código:
 
-    - Comentário: uso do `group()` para agrupar passos lógicos do teste (registro, login, transferência). Facilita leitura e relatórios.
+    - Comentário: uso do `group()` para agrupar passos lógicos do teste (registro, login, transferência); grupos aparecem nos relatórios do k6 e ajudam a segmentar métricas e checks.
 
     ```javascript
     group('login do remetente', function () { // linhas 76-80
@@ -77,7 +77,7 @@ O código abaixo está armazenado no arquivo `test/k6/trabalho_final_k6.js` e de
   - Localização: `export const options.thresholds` em `test/k6/trabalho_final_k6.js`.
   - Exemplo no meu código:
 
-    - Comentário: limites de aceitação para latência (percentis) e taxa de erro; úteis para falhar builds quando a performance degrada.
+    - Comentário: thresholds definem condições de aceitação (p.e. percentis de latência e taxa de erro). Ultrapassar um threshold pode fazer o job falhar — útil para gates em CI. Aqui são valores apropriados para execução local.
 
     ```javascript
     http_req_duration: ['p(90)<=1200', 'p(95)<=1500'], // linhas 17-22
@@ -89,7 +89,7 @@ O código abaixo está armazenado no arquivo `test/k6/trabalho_final_k6.js` e de
   - Localização: uso de `runCheck(res, 'mensagem', expectedStatus)` em `helpers/apiHelpers.js` e chamadas no script principal.
   - Exemplo no meu código:
 
-    - Comentário: validações funcionais por requisição que contribuem para as metrics `checks` do k6.
+    - Comentário: validações funcionais por requisição que alimentam a métrica `checks` do k6; os helpers encapsulam a chamada HTTP e retornam objetos que facilitam os asserts (status, corpo, timings).
 
     ```javascript
     const res = registerUser(generatedFrom, generatedFromPassword); // linha 59
@@ -101,7 +101,7 @@ O código abaixo está armazenado no arquivo `test/k6/trabalho_final_k6.js` e de
   - Localização: `test/k6/helpers/*` — por exemplo `apiHelpers.js`, `faker.js`, `BASE_URL.js`.
   - Exemplo no meu código:
  
-    - Comentário: encapsulam registro, login e verificação para manter o script legível e reutilizável.
+    - Comentário: encapsulam chamadas API (register/login) e execução de checks para manter o script legível, reduzir duplicação e facilitar manutenção.
 
     ```javascript
     import { registerUser, login, runCheck } from './helpers/apiHelpers.js'; // linhas 1-7
@@ -111,7 +111,7 @@ O código abaixo está armazenado no arquivo `test/k6/trabalho_final_k6.js` e de
   - Localização: `test/k6/trabalho_final_k6.js` — definição `const transferDuration = new Trend('transfer_duration_ms')` (linha 15) e uso no bloco de transferência (linha 105).
   - Exemplo no meu código:
 
-    - Comentário: métricas customizadas para analisar distribuição de latências específicas (aqui: transferências).
+    - Comentário: métricas customizadas (Trend) para analisar distribuição de latências específicas em ms — aqui usamos `transfer_duration_ms` para medir apenas o tempo das transferências.
 
     ```javascript
     if (res && res.timings && typeof res.timings.duration === 'number') {
@@ -123,7 +123,7 @@ O código abaixo está armazenado no arquivo `test/k6/trabalho_final_k6.js` e de
   - Localização: `test/k6/helpers/faker.js` e import `generateUsername`, `generatePassword`, `generateAmount`.
   - Exemplo no meu código:
 
-    - Comentário: gera dados realistas e únicos por VU/iteração (usernames, senhas e valores), reduzindo colisões durante os testes. O helper tenta usar a biblioteca faker quando disponível e possui um fallback simples que gera strings/valores programaticamente caso a extensão falhe ou não esteja presente, garantindo que o script continue executando em ambientes sem dependências extra.
+    - Comentário: gera dados realistas e únicos por VU/iteração (usernames, senhas, valores). O helper tenta usar faker quando disponível e possui um fallback programático para continuar funcionando em ambientes sem a extensão (resiliência útil em CI/local).
 
     ```javascript
     const generatedFrom = `from_${generateUsername()}_${Math.floor(Math.random() * 10000)}`; // linhas 50-53
@@ -133,7 +133,7 @@ O código abaixo está armazenado no arquivo `test/k6/trabalho_final_k6.js` e de
   - Localização: `test/k6/helpers/BASE_URL.js` — `export const BASE_URL = __ENV.base_url || 'http://localhost:3000'` (linha 2); o script usa `--env base_url="http://localhost:3000"`.
   - Exemplo no meu código:
 
-    - Comentário: permite apontar os testes para diferentes ambientes sem alterar código.
+    - Comentário: centraliza a URL base em um helper (`test/k6/helpers/BASE_URL.js`) que lê `__ENV.base_url`, permitindo alternar ambientes via `--env` sem tocar o script.
 
     ```javascript
     import { BASE_URL } from './helpers/BASE_URL.js'; // import no topo do script
@@ -145,7 +145,7 @@ O código abaixo está armazenado no arquivo `test/k6/trabalho_final_k6.js` e de
   - Localização: `test/k6/trabalho_final_k6.js` — `export const options.stages` (linhas 25-30).
   - Exemplo no meu código:
 
-    - Comentário: definições de rampa (ramp-up, spike, ramp-down) para simular diferentes padrões de tráfego.
+    - Comentário: sequência de ramp-up/spike e ramp-down para simular picos e períodos estáveis de tráfego — útil para avaliar comportamento sob diferentes cargas.
 
     ```javascript
     stages: [ // linhas 25-30
@@ -163,7 +163,7 @@ O código abaixo está armazenado no arquivo `test/k6/trabalho_final_k6.js` e de
   - Localização: `test/k6/trabalho_final_k6.js` — `login()` retorna `token` e o mesmo é reutilizado para autorizar a requisição de transferência.
   - Exemplo no meu código:
 
-    - Comentário: extrai valor do corpo da resposta e reaproveita em chamadas subsequentes, simulando fluxo real do sistema.
+    - Comentário: captura o token retornado pelo login e o reutiliza em requisições subsequentes (Authorization Bearer), simulando o fluxo real do usuário: registrar -> login -> ação autenticada.
 
     ```javascript
     const result = login(generatedFrom, generatedFromPassword); // linhas 76-78
@@ -176,7 +176,7 @@ O código abaixo está armazenado no arquivo `test/k6/trabalho_final_k6.js` e de
   - Localização: `test/k6/trabalho_final_k6.js` — montagem do header `Authorization` para chamadas a `/transfers` (linha 101).
   - Exemplo no meu código:
 
-    - Comentário: para fazer transferências necessita do token que está em Bearer após pegar do login do usuário.
+    - Comentário: o header `Authorization: Bearer <token>` é montado a partir do token do login e enviado nas requisições a `/transfers` para autorizar a operação.
 
     ```javascript
     const params = { headers: {} };
@@ -188,7 +188,7 @@ O código abaixo está armazenado no arquivo `test/k6/trabalho_final_k6.js` e de
   - Localização: `test/k6/data/transfer_cases.js` carregado por `SharedArray`.
   - Exemplo no meu código:
 
-      - Comentário: casos externos (min/max/decimals/label) fornecem entradas variadas para as transferências.
+      - Comentário: casos externos descrevem valores (min/max/decimals/label) usados para gerar inputs variados; carregamos esses casos via `SharedArray` (open + eval) — observe o uso de eval e o trade-off entre flexibilidade (JS com comentários) e segurança.
       
     ```javascript
     const transferCases = new SharedArray('transferCases', function () { // linhas 38-43
