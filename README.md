@@ -61,7 +61,7 @@ Esta API permite o registro, login, consulta de usuários e transferências de v
 O código abaixo está armazenado no arquivo `test/k6/trabalho_final_k6.js` e demonstra alguns conceitos importantes de teste de carga com k6. Abaixo eu comentei os trechos do seu script seguindo o formato de exemplo (cada snippet contém comentários inline com as linhas correspondentes):
 
 - Groups
-  - Exemplo no seu código:
+  - Exemplo no meu código:
     ```javascript
     group('login do remetente', function () { // linhas 76-80
       const result = login(email, password); // linhas 76-78
@@ -72,7 +72,7 @@ O código abaixo está armazenado no arquivo `test/k6/trabalho_final_k6.js` e de
 
 - Thresholds
   - Localização: `export const options.thresholds` em `test/k6/trabalho_final_k6.js`.
-  - Exemplo no seu código:
+  - Exemplo no meu código:
     ```javascript
     http_req_duration: ['p(90)<=1200', 'p(95)<=1500'], // linhas 17-22
     http_req_failed: ['rate<0.01'] // linhas 17-22
@@ -81,7 +81,7 @@ O código abaixo está armazenado no arquivo `test/k6/trabalho_final_k6.js` e de
 
 - Checks
   - Localização: uso de `runCheck(res, 'mensagem', expectedStatus)` em `helpers/apiHelpers.js` e chamadas no script principal.
-  - Exemplo no seu código:
+  - Exemplo no meu código:
     ```javascript
     const res = registerUser(generatedFrom, generatedFromPassword); // linha 59
     runCheck(res, 'registro remetente status 201', 201); // linha 59
@@ -90,7 +90,7 @@ O código abaixo está armazenado no arquivo `test/k6/trabalho_final_k6.js` e de
 
 - Helpers
   - Localização: `test/k6/helpers/*` — por exemplo `apiHelpers.js`, `faker.js`, `BASE_URL.js`.
-  - Exemplo no seu código:
+  - Exemplo no meu código:
     ```javascript
     import { registerUser, login, runCheck } from './helpers/apiHelpers.js'; // linhas 1-7
     ```
@@ -98,7 +98,7 @@ O código abaixo está armazenado no arquivo `test/k6/trabalho_final_k6.js` e de
 
 - Trends
   - Localização: `test/k6/trabalho_final_k6.js` — definição `const transferDuration = new Trend('transfer_duration_ms')` (linha 15) e uso no bloco de transferência (linha 105).
-  - Exemplo no seu código:
+  - Exemplo no meu código:
     ```javascript
     if (res && res.timings && typeof res.timings.duration === 'number') {
       transferDuration.add(res.timings.duration); // linha 105
@@ -108,7 +108,7 @@ O código abaixo está armazenado no arquivo `test/k6/trabalho_final_k6.js` e de
 
 - Faker
   - Localização: `test/k6/helpers/faker.js` e import `generateUsername`, `generatePassword`, `generateAmount`.
-  - Exemplo no seu código:
+  - Exemplo no meu código:
     ```javascript
     const generatedFrom = `from_${generateUsername()}_${Math.floor(Math.random() * 10000)}`; // linhas 50-53
     ```
@@ -120,7 +120,7 @@ O código abaixo está armazenado no arquivo `test/k6/trabalho_final_k6.js` e de
 
 - Stages
   - Localização: `test/k6/trabalho_final_k6.js` — `export const options.stages` (linhas 25-30).
-  - Exemplo no seu código:
+  - Exemplo no meu código:
     ```javascript
     stages: [ // linhas 25-30
       { duration: '5s', target: 20 }, // Ramp up — aumento gradual
@@ -135,7 +135,7 @@ O código abaixo está armazenado no arquivo `test/k6/trabalho_final_k6.js` e de
 
 - Reaproveitamento de Resposta
   - Localização: `test/k6/trabalho_final_k6.js` — `login()` retorna `token` e o mesmo é reutilizado para autorizar a requisição de transferência.
-  - Exemplo no seu código:
+  - Exemplo no meu código:
     ```javascript
     const result = login(generatedFrom, generatedFromPassword); // linhas 76-78
     token = result && result.token; // linhas 76-78
@@ -145,7 +145,7 @@ O código abaixo está armazenado no arquivo `test/k6/trabalho_final_k6.js` e de
 
 - Uso de Token de Autenticação
   - Localização: `test/k6/trabalho_final_k6.js` — montagem do header `Authorization` para chamadas a `/transfers` (linha 101).
-  - Exemplo no seu código:
+  - Exemplo no meu código:
     ```javascript
     const params = { headers: {} };
     if (token) params.headers['Authorization'] = `Bearer ${token}`; // linha 101
@@ -155,7 +155,7 @@ O código abaixo está armazenado no arquivo `test/k6/trabalho_final_k6.js` e de
 
 - Data-Driven Testing
   - Localização: `test/k6/data/transfer_cases.js` carregado por `SharedArray`.
-  - Exemplo no seu código:
+  - Exemplo no meu código:
     ```javascript
     const transferCases = new SharedArray('transferCases', function () { // linhas 38-43
       const src = open('./data/transfer_cases.js');
