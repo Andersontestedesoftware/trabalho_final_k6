@@ -83,8 +83,6 @@ k6 run --env base_url='http://localhost:3000' test/k6/trabalho_final_k6.js
 $env:K6_WEB_DASHBOARD='true'; $env:K6_WEB_DASHBOARD_EXPORT='dashboard.html'; k6 run --env base_url='http://localhost:3000' test/k6/trabalho_final_k6.js
 ```
 
-Observação: ajuste `--env base_url` para apontar para o ambiente alvo quando necessário (ex.: staging).
-
 ## Comentários do aluno sobre o teste k6
 
 O código abaixo está armazenado no arquivo `test/k6/trabalho_final_k6.js` e demonstra alguns conceitos importantes de teste de carga com k6.
