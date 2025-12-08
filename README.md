@@ -58,7 +58,7 @@ Esta API permite o registro, login, consulta de usuários e transferências de v
 
 ## Comentários do aluno sobre o teste k6
 
-O código abaixo está armazenado no arquivo `test/k6/trabalho_final_k6.js` e demonstra alguns conceitos importantes de teste de carga com k6. Abaixo eu comentei os trechos do seu script seguindo o formato de exemplo (cada snippet contém comentários inline com as linhas correspondentes):
+O código abaixo está armazenado no arquivo `test/k6/trabalho_final_k6.js` e demonstra alguns conceitos importantes de teste de carga com k6.
 
 - Groups
   - Exemplo no meu código:
@@ -77,7 +77,7 @@ O código abaixo está armazenado no arquivo `test/k6/trabalho_final_k6.js` e de
   - Localização: `export const options.thresholds` em `test/k6/trabalho_final_k6.js`.
   - Exemplo no meu código:
 
-    - Comentário: thresholds definem condições de aceitação (p.e. percentis de latência e taxa de erro). Ultrapassar um threshold pode fazer o job falhar — útil para gates em CI. Aqui são valores apropriados para execução local.
+    - Comentário: thresholds é como se colocasse um limite de performance, ou seja, o teste só passa se esses números de desempenho forem respeitados.
 
     ```javascript
     http_req_duration: ['p(90)<=1200', 'p(95)<=1500'], // linhas 17-22
@@ -89,7 +89,7 @@ O código abaixo está armazenado no arquivo `test/k6/trabalho_final_k6.js` e de
   - Localização: uso de `runCheck(res, 'mensagem', expectedStatus)` em `helpers/apiHelpers.js` e chamadas no script principal.
   - Exemplo no meu código:
 
-    - Comentário: validações funcionais por requisição que alimentam a métrica `checks` do k6; os helpers encapsulam a chamada HTTP e retornam objetos que facilitam os asserts (status, corpo, timings).
+  - Comentário: Validações via `runCheck`: helper que encapsula o `check()` do k6, valida os dados para saber se está chegando a informação esperada.
 
     ```javascript
     const res = registerUser(generatedFrom, generatedFromPassword); // linha 59
@@ -111,7 +111,7 @@ O código abaixo está armazenado no arquivo `test/k6/trabalho_final_k6.js` e de
   - Localização: `test/k6/trabalho_final_k6.js` — definição `const transferDuration = new Trend('transfer_duration_ms')` (linha 15) e uso no bloco de transferência (linha 105).
   - Exemplo no meu código:
 
-    - Comentário: métricas customizadas (Trend) para analisar distribuição de latências específicas em ms — aqui usamos `transfer_duration_ms` para medir apenas o tempo das transferências.
+    - Comentário: métricas customizadas (Trend) para analisar distribuição de latências específicas em ms — aqui usamos `transfer_duration_ms` para medir apenas o tempo das transferências, ou seja, metrica de um endpoint específico.
 
     ```javascript
     if (res && res.timings && typeof res.timings.duration === 'number') {
@@ -123,7 +123,7 @@ O código abaixo está armazenado no arquivo `test/k6/trabalho_final_k6.js` e de
   - Localização: `test/k6/helpers/faker.js` e import `generateUsername`, `generatePassword`, `generateAmount`.
   - Exemplo no meu código:
 
-    - Comentário: gera dados realistas e únicos por VU/iteração (usernames, senhas, valores). O helper tenta usar faker quando disponível e possui um fallback programático para continuar funcionando em ambientes sem a extensão (resiliência útil em CI/local).
+    - Comentário: gera dados realistas e únicos por VU/iteração (usernames, senhas, valores). Alem disso, dentro da função generateUsername(), eu uso o faker e em caso de falha ele executa um codigo para gerar os dados como se fosse um fluxo alternativo.
 
     ```javascript
     const generatedFrom = `from_${generateUsername()}_${Math.floor(Math.random() * 10000)}`; // linhas 50-53
@@ -145,7 +145,7 @@ O código abaixo está armazenado no arquivo `test/k6/trabalho_final_k6.js` e de
   - Localização: `test/k6/trabalho_final_k6.js` — `export const options.stages` (linhas 25-30).
   - Exemplo no meu código:
 
-    - Comentário: sequência de ramp-up/spike e ramp-down para simular picos e períodos estáveis de tráfego — útil para avaliar comportamento sob diferentes cargas.
+    - Comentário: Os Stages definem etapas de carga (ramp-up, pico e ramp-down) para simular aumento gradual de usuários, períodos de tráfego alto e depois redução. Isso permite avaliar como o sistema se comporta em diferentes níveis de carga.
 
     ```javascript
     stages: [ // linhas 25-30
@@ -170,7 +170,6 @@ O código abaixo está armazenado no arquivo `test/k6/trabalho_final_k6.js` e de
     token = result && result.token; // linhas 76-78
     if (token) params.headers['Authorization'] = `Bearer ${token}`; // linha 101
     ```
-
 
 - Uso de Token de Autenticação
   - Localização: `test/k6/trabalho_final_k6.js` — montagem do header `Authorization` para chamadas a `/transfers` (linha 101).

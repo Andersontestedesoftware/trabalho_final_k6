@@ -24,11 +24,9 @@ const transferDuration = new Trend('transfer_duration_ms');
 // Configurações do cenário k6: thresholds e stages controlam falhas e padrão de carga
 export const options = {
   thresholds: {
-    // Thresholds que falham a execução se ultrapassados (úteis em CI)
     // aqui definidos para ambiente local (valores em ms)
     http_req_duration: ['p(90)<=1200', 'p(95)<=1500'],
     http_req_failed: ['rate<0.01']
-    // versões comentadas abaixo seriam thresholds muito agressivos (ex.: para unit-tests)
     //http_req_duration: ['p(90)<=2', 'p(95)<=3'],
     //http_req_failed: ['rate<0.01']
   },

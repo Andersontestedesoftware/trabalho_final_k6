@@ -5,8 +5,25 @@ import { BASE_URL } from './BASE_URL.js';
 // Reusable check helper. name: label used for k6 check, expectedStatus defaults to 200
 export function runCheck(res, name, expectedStatus = 200) {
   try {
-    return check(res, { [name]: (r) => r.status === expectedStatus });
+    // realiza o check padrão: compara status HTTP com o esperado
+    const ok = check(res, { [name]: (r) => r && r.status === expectedStatus });
+    if (!ok) {
+      // quando falhar, loga um resumo curto (status + trecho do body) para ajudar debug
+      const status = res && res.status;
+      let bodySnippet = '';
+      try {
+        if (res && res.body) {
+          bodySnippet = typeof res.body === 'string' ? res.body.slice(0, 200) : JSON.stringify(res.body).slice(0, 200);
+        }
+      } catch (e) {
+        bodySnippet = '<unserializable body>';
+      }
+      console.log(`runCheck failed: ${name} expected=${expectedStatus} got=${status} body=${bodySnippet}`);
+    }
+    return ok;
   } catch (e) {
+    // log de erro inesperado ao executar o check e retorna false
+    console.log(`runCheck error: ${name} -> ${e && e.message}`);
     return false;
   }
 }
