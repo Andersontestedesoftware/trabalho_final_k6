@@ -58,7 +58,10 @@ Esta API permite o registro, login, consulta de usuários e transferências de v
 
 ## COMO EXECUTAR MEUS TESTES
 
-antes deve subir o servidor com o comando 'node server.js'
+Antes deve subir o servidor com o comando:
+```powershell
+node server.js
+```
 
 Abaixo estão os comandos usados para executar o script k6 localizado em `test/k6/trabalho_final_k6.js`.
 
