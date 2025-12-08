@@ -57,8 +57,14 @@ Esta API permite o registro, login, consulta de usuários e transferências de v
 - O arquivo `app.js` pode ser importado em ferramentas de teste como Supertest.
 
 ## COMO EXECUTAR MEUS TESTES
+Observação: após clonar o repositório, instale as dependências antes de iniciar o servidor. Recomenda-se Node 16+ (ou 18+). Em um ambiente de desenvolvimento local execute `npm install`.
 
-Antes deve subir o servidor com o comando:
+Exemplo (PowerShell):
+```powershell
+npm install
+```
+
+Em seguida, inicie o servidor:
 ```powershell
 node server.js
 ```
