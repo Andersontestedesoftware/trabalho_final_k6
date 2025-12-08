@@ -56,6 +56,26 @@ Esta API permite o registro, login, consulta de usuários e transferências de v
 ## Testes
 - O arquivo `app.js` pode ser importado em ferramentas de teste como Supertest.
 
+## COMO EXECUTAR MEUS TESTES
+
+antes deve subir o servidor com o comando 'node server.js'
+
+Abaixo estão os comandos usados para executar o script k6 localizado em `test/k6/trabalho_final_k6.js`.
+
+- Teste sem report (executa localmente, imprime resultados no terminal):
+
+```powershell
+k6 run --env base_url='http://localhost:3000' test/k6/trabalho_final_k6.js
+```
+
+- Teste com report (exporta o dashboard k6 para `dashboard.html`; PowerShell):
+
+```powershell
+$env:K6_WEB_DASHBOARD='true'; $env:K6_WEB_DASHBOARD_EXPORT='dashboard.html'; k6 run --env base_url='http://localhost:3000' test/k6/trabalho_final_k6.js
+```
+
+Observação: ajuste `--env base_url` para apontar para o ambiente alvo quando necessário (ex.: staging).
+
 ## Comentários do aluno sobre o teste k6
 
 O código abaixo está armazenado no arquivo `test/k6/trabalho_final_k6.js` e demonstra alguns conceitos importantes de teste de carga com k6.
