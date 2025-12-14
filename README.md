@@ -153,12 +153,12 @@ O código abaixo está armazenado no arquivo `test/k6/trabalho_final_k6.js` e de
   - Comentário: gera dados realistas e únicos para cada VU e iteração (usernames, senhas, valores). A função `generateUsername()` tenta usar `faker.person.firstName()`/`lastName()` e, se esses métodos não estiverem disponíveis ou ocorrer um erro em tempo de execução, executa um fallback que gera um username aleatório.
 
     - Implementação correta (trecho da função `generateUsername` em `test/k6/helpers/faker.js`):
-
+    - Uso (exemplo no script):
     ```javascript
     export function generateUsername() {
       try {
-        if (faker && faker.person && typeof faker.person.firstName === 'function') {
-          const f = faker.person.firstName();
+        if (faker && faker.person && typeof faker.person.firstName === 'function') { //linha 6-16
+          const f = faker.person.firstName(); 
           const l = typeof faker.person.lastName === 'function' ? faker.person.lastName() : '';
           return `${f}${l}`.replace(/\s+/g, '').toLowerCase();
         }
@@ -168,12 +168,6 @@ O código abaixo está armazenado no arquivo `test/k6/trabalho_final_k6.js` e de
       // final fallback
       return Math.random().toString(36).slice(2, 10);
     }
-    ```
-
-    - Uso (exemplo no script):
-
-    ```javascript
-    const generatedFrom = `from_${generateUsername()}_${Math.floor(Math.random() * 10000)}`; // linhas 50-53
     ```
 
 - Variável de Ambiente
