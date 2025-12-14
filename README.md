@@ -150,7 +150,27 @@ O código abaixo está armazenado no arquivo `test/k6/trabalho_final_k6.js` e de
   - Localização: `test/k6/helpers/faker.js` e import `generateUsername`, `generatePassword`, `generateAmount`.
   - Exemplo no meu código:
 
-    - Comentário: gera dados realistas e únicos por VU/iteração (usernames, senhas, valores). Alem disso, dentro da função generateUsername(), eu uso o faker e em caso de falha ele executa um codigo para gerar os dados como se fosse um fluxo alternativo.
+  - Comentário: gera dados realistas e únicos para cada VU e iteração (usernames, senhas, valores). A função `generateUsername()` tenta usar `faker.person.firstName()`/`lastName()` e, se esses métodos não estiverem disponíveis ou ocorrer um erro em tempo de execução, executa um fallback que gera um username aleatório.
+
+    - Implementação correta (trecho da função `generateUsername` em `test/k6/helpers/faker.js`):
+
+    ```javascript
+    export function generateUsername() {
+      try {
+        if (faker && faker.person && typeof faker.person.firstName === 'function') {
+          const f = faker.person.firstName();
+          const l = typeof faker.person.lastName === 'function' ? faker.person.lastName() : '';
+          return `${f}${l}`.replace(/\s+/g, '').toLowerCase();
+        }
+      } catch (e) {
+        // ignore and fallback
+      }
+      // final fallback
+      return Math.random().toString(36).slice(2, 10);
+    }
+    ```
+
+    - Uso (exemplo no script):
 
     ```javascript
     const generatedFrom = `from_${generateUsername()}_${Math.floor(Math.random() * 10000)}`; // linhas 50-53
